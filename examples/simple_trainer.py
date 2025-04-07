@@ -35,7 +35,7 @@ from gsplat.compression import PngCompression
 from gsplat.distributed import cli
 from gsplat.optimizers import SelectiveAdam
 from gsplat.rendering import rasterization
-from gsplat.strategy import DefaultStrategy, MCMCStrategy
+from gsplat.strategy import DefaultStrategy, MCMCStrategy, FusionStrategy
 from gsplat.utils import save_ply
 
 
@@ -1101,7 +1101,7 @@ if __name__ == "__main__":
         "fusion": (
         "Gaussian splatting training with a capped number of Gaussians (Fusion Strategy).",
         Config(
-            strategy=FusionStrategy(max_gaussians=10_000, verbose=True)
+            strategy=FusionStrategy(max_gaussians=300_000, verbose=True)
         ),
         ),
     }
