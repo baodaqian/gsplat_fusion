@@ -1098,6 +1098,12 @@ if __name__ == "__main__":
                 strategy=MCMCStrategy(verbose=True),
             ),
         ),
+         "fusion": (
+        "Gaussian splatting training with a capped number of Gaussians (Fusion Strategy).",
+        Config(
+            strategy=FusionStrategy(max_gaussians=10_000, verbose=True)
+        ),
+    ),
     }
     cfg = tyro.extras.overridable_config_cli(configs)
     cfg.adjust_steps(cfg.steps_scaler)

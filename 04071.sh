@@ -14,7 +14,7 @@ do
     echo "Running $SCENE"
 
     # Train without evaluation
-    CUDA_VISIBLE_DEVICES=0 python examples/simple_trainer.py default --eval_steps -1 --disable_viewer --data_factor $DATA_FACTOR \
+    CUDA_VISIBLE_DEVICES=0 python examples/simple_trainer.py fusion --eval_steps -1 --disable_viewer --data_factor $DATA_FACTOR \
         --render_traj_path $RENDER_TRAJ_PATH \
         --data_dir examples/data/360_v2/$SCENE/ \
         --result_dir $RESULT_DIR/$SCENE/
@@ -22,7 +22,7 @@ do
     # Run evaluation and render for each checkpoint
     for CKPT in $RESULT_DIR/$SCENE/ckpts/*;
     do
-        CUDA_VISIBLE_DEVICES=0 python examples/simple_trainer.py default --disable_viewer --data_factor $DATA_FACTOR \
+        CUDA_VISIBLE_DEVICES=0 python examples/simple_trainer.py fusion --disable_viewer --data_factor $DATA_FACTOR \
             --render_traj_path $RENDER_TRAJ_PATH \
             --data_dir examples/data/360_v2/$SCENE/ \
             --result_dir $RESULT_DIR/$SCENE/ \
