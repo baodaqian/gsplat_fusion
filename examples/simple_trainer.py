@@ -51,11 +51,11 @@ class Config:
     render_traj_path: str = "interp"
 
     # Path to the Mip-NeRF 360 dataset
-    data_dir: str = "data/360_v2/garden"
+    data_dir: str = "data/360_v2/bonsai"
     # Downsample factor for the dataset
     data_factor: int = 4
     # Directory to save results
-    result_dir: str = "results/garden"
+    result_dir: str = "results/bonsai"
     # Every N images there is a test image
     test_every: int = 8
     # Random crop size for training  (experimental)
@@ -76,15 +76,15 @@ class Config:
     steps_scaler: float = 1.0
 
     # Number of training steps
-    max_steps: int = 30_000
+    max_steps: int = 10_000
     # Steps to evaluate the model
-    eval_steps: List[int] = field(default_factory=lambda: [7_000, 30_000])
+    eval_steps: List[int] = field(default_factory=lambda: [1_000, 10_000])
     # Steps to save the model
-    save_steps: List[int] = field(default_factory=lambda: [7_000, 30_000])
+    save_steps: List[int] = field(default_factory=lambda: [1_000, 10_000])
     # Whether to save ply file (storage size can be large)
     save_ply: bool = False
     # Steps to save the model as ply
-    ply_steps: List[int] = field(default_factory=lambda: [7_000, 30_000])
+    ply_steps: List[int] = field(default_factory=lambda: [1_000, 10_000])
     # Whether to disable video generation during training and evaluation
     disable_video: bool = False
 
@@ -108,7 +108,7 @@ class Config:
     # Near plane clipping distance
     near_plane: float = 0.01
     # Far plane clipping distance
-    far_plane: float = 1e10
+    far_plane: float = 20.0
 
     # Strategy for GS densification
     strategy: Union[DefaultStrategy, MCMCStrategy] = field(
