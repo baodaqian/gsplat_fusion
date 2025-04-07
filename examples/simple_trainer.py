@@ -687,13 +687,13 @@ class Runner:
             pbar.set_description(desc)
 
             # write images (gt and render)
-            # if world_rank == 0 and step % 800 == 0:
-            #     canvas = torch.cat([pixels, colors], dim=2).detach().cpu().numpy()
-            #     canvas = canvas.reshape(-1, *canvas.shape[2:])
-            #     imageio.imwrite(
-            #         f"{self.render_dir}/train_rank{self.world_rank}.png",
-            #         (canvas * 255).astype(np.uint8),
-            #     )
+            if world_rank == 0 and step % 2000 == 0:
+                 canvas = torch.cat([pixels, colors], dim=2).detach().cpu().numpy()
+                 canvas = canvas.reshape(-1, *canvas.shape[2:])
+                 imageio.imwrite(
+                     f"{self.render_dir}/train_rank{self.world_rank}.png",
+                     (canvas * 255).astype(np.uint8),
+                 )
 
             if world_rank == 0 and cfg.tb_every > 0 and step % cfg.tb_every == 0:
                 mem = torch.cuda.max_memory_allocated() / 1024**3
