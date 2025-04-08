@@ -127,4 +127,5 @@ results
 !examples/benchmarks/compression/results/
 
 # new experiment I run
-daqian_test
+daqian_test/
+radar_data/
