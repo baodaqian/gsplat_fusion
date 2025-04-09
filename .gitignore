@@ -129,3 +129,6 @@ results
 # new experiment I run
 daqian_test/
 radar_data/
+lego_data/
+train_cube.py
+train_lego.py

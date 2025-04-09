@@ -1,5 +1,6 @@
 import json
 import math
+import cv2
 import os
 import time
 from collections import defaultdict
@@ -76,15 +77,15 @@ class Config:
     steps_scaler: float = 1.0
 
     # Number of training steps
-    max_steps: int = 30_000
+    max_steps: int = 10_000
     # Steps to evaluate the model
-    eval_steps: List[int] = field(default_factory=lambda: [7_000, 30_000])
+    eval_steps: List[int] = field(default_factory=lambda: [5_000, 10_000])
     # Steps to save the model
-    save_steps: List[int] = field(default_factory=lambda: [7_000, 30_000])
+    save_steps: List[int] = field(default_factory=lambda: [5_000, 10_000])
     # Whether to save ply file (storage size can be large)
     save_ply: bool = False
     # Steps to save the model as ply
-    ply_steps: List[int] = field(default_factory=lambda: [7_000, 30_000])
+    ply_steps: List[int] = field(default_factory=lambda: [5_000, 10_000])
     # Whether to disable video generation during training and evaluation
     disable_video: bool = False
 
@@ -93,7 +94,7 @@ class Config:
     # Initial number of GSs. Ignored if using sfm
     init_num_pts: int = 100_000
     # Initial extent of GSs as a multiple of the camera extent. Ignored if using sfm
-    init_extent: float = 3.0
+    init_extent: float = 5.0
     # Degree of spherical harmonics
     sh_degree: int = 3
     # Turn on another SH degree every this steps
@@ -101,14 +102,14 @@ class Config:
     # Initial opacity of GS
     init_opa: float = 0.1
     # Initial scale of GS
-    init_scale: float = 1.0
+    init_scale: float = 0.01
     # Weight for SSIM loss
     ssim_lambda: float = 0.2
 
     # Near plane clipping distance
     near_plane: float = 0.01
     # Far plane clipping distance
-    far_plane: float = 20.0
+    far_plane: float = 10
 
     # Strategy for GS densification
     strategy: Union[DefaultStrategy, MCMCStrategy] = field(
@@ -994,6 +995,13 @@ class Runner:
             # write images
             canvas = torch.cat(canvas_list, dim=2).squeeze(0).cpu().numpy()
             canvas = (canvas * 255).astype(np.uint8)
+            ##################
+            # Added 04082025 #
+            ##################
+
+            #downsample 100 by 100 radar data sample to 64 by 64 uniformly:
+            canvas = cv2.resize(canvas, (64, 64), interpolation=cv2.INTER_AREA)
+
             writer.append_data(canvas)
         writer.close()
         print(f"Video saved to {video_dir}/traj_{step}.mp4")
