@@ -68,6 +68,13 @@ class Parser:
         self.normalize = normalize
         self.test_every = test_every
 
+        transforms_path = os.path.join(data_dir, "../transforms_train.json")
+        print(f'data path {transforms_path}')
+        if os.path.exists(transforms_path):
+            self._load_blender_dataset(transforms_path)
+            return  # skip colmap parsing
+
+
         colmap_dir = os.path.join(data_dir, "sparse/0/")
         if not os.path.exists(colmap_dir):
             colmap_dir = os.path.join(data_dir, "sparse")
@@ -329,6 +336,80 @@ class Parser:
         scene_center = np.mean(camera_locations, axis=0)
         dists = np.linalg.norm(camera_locations - scene_center, axis=1)
         self.scene_scale = np.max(dists)
+
+    def _load_blender_dataset(self, transforms_path: str):
+        with open(transforms_path, "r") as f:
+            meta = json.load(f)
+
+        image_paths = []
+        camtoworlds = []
+        for frame in meta["frames"]:
+            fname = os.path.join(os.path.dirname(transforms_path), frame["file_path"])
+            if not fname.endswith(".png") and not fname.endswith(".jpg"):
+                if os.path.exists(fname + ".png"):
+                    fname += ".png"
+                elif os.path.exists(fname + ".jpg"):
+                    fname += ".jpg"
+            image_paths.append(fname)
+
+            c2w = np.array(frame["transform_matrix"], dtype=np.float32)
+            camtoworlds.append(c2w)
+
+        camtoworlds = np.stack(camtoworlds)
+        with Image.open(image_paths[0]) as img:
+            W, H = img.size
+        camera_angle_x = float(meta["camera_angle_x"])
+        focal = 0.5 * W / np.tan(0.5 * camera_angle_x)
+        print(f'img size: {H} {W}, focal length: {focal:.4f} ')
+        # H, W, focal = meta["h"], meta["w"], meta["fl_x"]
+
+        K = np.array([
+            [focal, 0, W / 2],
+            [0, focal, H / 2],
+            [0, 0, 1]
+        ])
+        K[:2, :] /= self.factor
+
+        # Basic dict population
+        self.image_names = [os.path.basename(p) for p in image_paths]
+        self.image_paths = image_paths
+        self.camtoworlds = camtoworlds
+        self.Ks_dict = {0: K}
+        self.params_dict = {0: np.empty(0, dtype=np.float32)}
+        self.imsize_dict = {0: (W // self.factor, H // self.factor)}
+        self.camera_ids = [0] * len(image_paths)
+        self.mask_dict = {0: None}
+        self.extconf = {"spiral_radius_scale": 1.0, "no_factor_suffix": True}
+        self.points = np.zeros((0, 3), dtype=np.float32)
+        self.points_err = np.zeros((0,), dtype=np.float32)
+        self.points_rgb = np.zeros((0, 3), dtype=np.uint8)
+        self.point_indices = {}
+        self.transform = np.eye(4)
+
+        num_pts = 100_000
+        self.points = np.random.uniform(-1.3, 1.3, size=(num_pts, 3)).astype(np.float32)
+        self.points_rgb = (np.random.rand(num_pts, 3) * 255).astype(np.uint8)
+        self.points_err = np.zeros((num_pts,), dtype=np.float32)
+        self.point_indices = {
+            os.path.basename(p): np.random.choice(num_pts, size=200, replace=False)
+            for p in image_paths
+        }
+        # num_pts = 100_000
+        # print(f"Generating random point cloud ({num_pts})...")
+        
+        # # We create random points inside the bounds of the synthetic Blender scenes
+        # xyz = np.random.random((num_pts, 3)) * 2.6 - 1.3
+        # shs = np.random.random((num_pts, 3)) / 255.0
+        # pcd = BasicPointCloud(points=xyz, colors=SH2RGB(shs), normals=np.zeros((num_pts, 3)))
+
+        # storePly(ply_path, xyz, SH2RGB(shs) * 255)
+
+        # Set scene scale for Blender dataset
+        camera_locations = camtoworlds[:, :3, 3]
+        scene_center = np.mean(camera_locations, axis=0)
+        dists = np.linalg.norm(camera_locations - scene_center, axis=1)
+        self.scene_scale = np.max(dists)
+
 
 
 class Dataset:
