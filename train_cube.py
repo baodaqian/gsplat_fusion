@@ -15,21 +15,21 @@ import tqdm
 import tyro
 import viser
 import yaml
-from examples.datasets.colmap import Dataset, Parser
-from examples.datasets.traj import (
+from datasets.colmap import Dataset, Parser
+from datasets.traj import (
     generate_ellipse_path_z,
     generate_interpolated_path,
     generate_spiral_path,
 )
 from fused_ssim import fused_ssim
-from lib_bilagrid import BilateralGrid, color_correct, slice, total_variation_loss
+from examples.lib_bilagrid import BilateralGrid, color_correct, slice, total_variation_loss
 from torch import Tensor
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.tensorboard import SummaryWriter
 from torchmetrics.image import PeakSignalNoiseRatio, StructuralSimilarityIndexMeasure
 from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 from typing_extensions import Literal, assert_never
-from utils import AppearanceOptModule, CameraOptModule, knn, rgb_to_sh, set_random_seed
+from examples.utils import AppearanceOptModule, CameraOptModule, knn, rgb_to_sh, set_random_seed
 
 from gsplat.compression import PngCompression
 from gsplat.distributed import cli
