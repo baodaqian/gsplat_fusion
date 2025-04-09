@@ -68,7 +68,7 @@ class Parser:
         self.normalize = normalize
         self.test_every = test_every
 
-        transforms_path = os.path.join(data_dir, "../transforms_train.json")
+        transforms_path = os.path.join(data_dir, "transforms_train.json")
         print(f'data path {transforms_path}')
         if os.path.exists(transforms_path):
             self._load_blender_dataset(transforms_path)

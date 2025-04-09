@@ -1,22 +1,19 @@
 SCENE_DIR="radar_data"
 RESULT_DIR="daqian_test/radar_cube"
-SCENE_LIST="bonsai"
+SCENE_LIST="cube_nerf"
 RENDER_TRAJ_PATH="ellipse"
 
 for SCENE in $SCENE_LIST;
 do
-    if [ "$SCENE" = "bonsai" ] || [ "$SCENE" = "counter" ] || [ "$SCENE" = "kitchen" ] || [ "$SCENE" = "room" ]; then
-        DATA_FACTOR=2
-    else
+
         DATA_FACTOR=4
-    fi
 
     echo "Running $SCENE"
 
     # Train without evaluation
     CUDA_VISIBLE_DEVICES=0 python train_cube.py default --eval_steps -1 --disable_viewer --data_factor $DATA_FACTOR \
         --render_traj_path $RENDER_TRAJ_PATH \
-        --data_dir examples/data/360_v2/$SCENE/ \
+        --data_dir radar_data/$SCENE/ \
         --result_dir $RESULT_DIR/$SCENE/
 
     # Run evaluation and render for each checkpoint
@@ -24,7 +21,7 @@ do
     do
         CUDA_VISIBLE_DEVICES=0 python train_cube.py default --disable_viewer --data_factor $DATA_FACTOR \
             --render_traj_path $RENDER_TRAJ_PATH \
-            --data_dir examples/data/360_v2/$SCENE/ \
+            --data_dir radar_data/$SCENE/ \
             --result_dir $RESULT_DIR/$SCENE/ \
             --ckpt $CKPT
     done
