@@ -132,3 +132,6 @@ radar_data/
 lego_data/
 train_cube.py
 train_lego.py
+*.sbatch
+*.out
+*.sh
