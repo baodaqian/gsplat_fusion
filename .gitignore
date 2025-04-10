@@ -130,6 +130,7 @@ results
 daqian_test/
 radar_data/
 lego_data/
+training_checkpoints/
 train_cube.py
 train_lego.py
 *.sbatch
