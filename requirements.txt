@@ -14,7 +14,7 @@ fonttools==4.57.0
 fsspec==2025.3.2
 fused_ssim @ git+https://github.com/rahul-goel/fused-ssim@1272e21a282342e89537159e4bad508b19b34157
 grpcio==1.71.0
--e git+ssh://git@github.com/baodaqian/gsplat_fusion.git@721b28955d12f5b9f65b132f4234cf25ccbe40e1#egg=gsplat
+-e git+https://git@github.com/baodaqian/gsplat_fusion.git@721b28955d12f5b9f65b132f4234cf25ccbe40e1#egg=gsplat
 h11==0.14.0
 httpcore==1.0.7
 httpx==0.28.1
@@ -39,15 +39,15 @@ MarkupSafe==3.0.2
 matplotlib==3.10.1
 mdurl==0.1.2
 mkl-service==2.4.0
-mkl_fft @ file:///io/mkl313/mkl_fft_1730824109137/work
-mkl_random @ file:///io/mkl313/mkl_random_1730823916628/work
+mkl-fft==1.3.13
+mkl-random==1.2.2
 mpmath==1.3.0
 msgspec==0.19.0
 nerfview==0.0.3
 networkx==3.3
 ninja==1.11.1.4
 nodeenv==1.9.1
-numpy @ file:///work/mkl/numpy_and_numpy_base_1682952636358/work
+numpy==1.24.2
 nvidia-cublas-cu12==12.4.5.8
 nvidia-cuda-cupti-cu12==12.4.127
 nvidia-cuda-nvrtc-cu12==12.4.127
