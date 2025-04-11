@@ -136,3 +136,5 @@ train_lego.py
 *.sbatch
 *.out
 *.sh
+*.md
+*.def
